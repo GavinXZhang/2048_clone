@@ -186,17 +186,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         function checkForGameOver() {
-            let zeros = 0
-            for (let i = 0; i< squares.length; i++) {
-                if (squares[i].innerHTML == 0) {
-                    zeros++;
-                } 
+            let hasEmptyTile = squares.some(square => square.innerHTML == 0)
+            if (hasEmptyTile) return // Game is not over if there's an empty tile
+        
+            for (let i = 0; i < squares.length; i++) {
+                // Check right (ignore rightmost columns)
+                if (i % width !== width - 1 && squares[i].innerHTML === squares[i + 1].innerHTML) {
+                    return // still a valid move
+                }
+        
+                // Check down (ignore bottom row)
+                if (i < squares.length - width && squares[i].innerHTML === squares[i + width].innerHTML) {
+                    return // still a valid move
+                }
             }
-            if (zeros === 0) {
-                resultDisplay.innerHTML = 'You LOSE!'
-                document.removeEventListener('keydown', control)
-                setTimeout(clear, 2000)
-            }
+        
+            // No empty squares, and no possible merges
+            resultDisplay.innerHTML = 'You LOSE!'
+            document.removeEventListener('keydown', control)
+            setTimeout(clear, 2000)
         }
         function clear() {
             clearInterval(myTimer)
