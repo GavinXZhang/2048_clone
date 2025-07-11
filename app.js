@@ -69,6 +69,46 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        function moveup() {
+            for (let i = 0; i < 4; i++) {
+                let totalone = squares[i].innerHTML
+                let totalTwo = squares[i + width].innerHTML
+                let totalThree = squares[i + 2 * width].innerHTML
+                let totalFour = squares[i + 3 * width].innerHTML
+
+                let column = [parseInt(totalone), parseInt(totalTwo), parseInt(totalThree), parseInt(totalFour)]
+
+                let filteredColumn = column.filter(num => num)
+                let missing = 4 - filteredColumn.length
+                let zeros = Array(missing).fill(0)
+                let newColumn = filteredColumn.concat(zeros)
+                squares[i].innerHTML = newColumn[0]
+                squares[i + width].innerHTML = newColumn[1]
+                squares[i + width * 2].innerHTML = newColumn[2]
+                squares[i + width * 3].innerHTML = newColumn[3]
+            }
+        }
+        function movedown() {
+            for (let i = 0; i < 4; i++) {
+                let totalone = squares[i].innerHTML
+                let totalTwo = squares[i + width].innerHTML
+                let totalThree = squares[i + 2 * width].innerHTML
+                let totalFour = squares[i + 3 * width].innerHTML
+
+                let column = [parseInt(totalone), parseInt(totalTwo), parseInt(totalThree), parseInt(totalFour)]
+
+                let filteredColumn = column.filter(num => num)
+                let missing = 4 - filteredColumn.length
+                let zeros = Array(missing).fill(0)
+                let newColumn = zeros.concat(filteredColumn)
+                squares[i].innerHTML = newColumn[0]
+                squares[i + width].innerHTML = newColumn[1]
+                squares[i + width * 2].innerHTML = newColumn[2]
+                squares[i + width * 3].innerHTML = newColumn[3]
+            }
+        }
+
+
         function combineRow() {
             for (let i = 0; i < 15; i++){
                 if(squares[i].innerHTML === squares[i+1].innerHTML){
@@ -79,13 +119,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     scoreDispaly.innerHTML = score
                 }
             }
-            // checkForWin()
+            checkForWin()
+        }
+        function combineColumn() {
+            for (let i = 0; i < 12; i++){
+                if(squares[i].innerHTML === squares[i+width].innerHTML){
+                    let combinedTotal = parseInt(squares[i].innerHTML) + parseInt(squares[i+width].innerHTML)
+                    squares[i].innerHTML = combinedTotal
+                    squares[i+width].innerHTML = 0
+                    score += combinedTotal
+                    scoreDispaly.innerHTML = score
+                }
+            }
+            checkForWin()
         }
         function control (e) {
             if (e.key === 'ArrowLeft') {
                 keyLeft()
             }else if (e.key === 'ArrowRight') {
                 keyRight()
+            }else if (e.key === 'ArrowUp') {
+                keyUp()
+            }else if (e.key === 'ArrowDown') {
+                keyDown()
             }
 
         }
@@ -103,5 +159,56 @@ document.addEventListener('DOMContentLoaded', () => {
             moveRight()
             generate()
         }
-
+        function keyUp(){
+            moveup()
+            combineColumn()
+            moveup()
+            generate()
+        }
+        function keyDown(){
+            movedown()
+            combineColumn()
+            movedown()
+            generate()
+        }
+        function checkForWin() {
+            for (let i = 0; i < squares.length; i++){
+                if (squares[i].innerHTML == 2048) {
+                    resultDisplay.innerHTML = 'You WIN!'
+                    document.removeEventListener('keydown', control)
+                }
+            }
+        }
+        function checkForGameOver() {
+            for (let i = 0; i< squares.length; i++) {
+                let zeros = 0
+                if (squares[i].innerHTML == 0) {
+                    zeros++;
+                } 
+            }
+            if (zeros === 0) {
+                resultDisplay.innerHTML = 'You LOSE!'
+                document.removeEventListener('keydown', control)
+            }
+        }
+        function addColours () {
+            for (let i = 0; i < squares.length; i++){
+                if (squares[i].innerHTML == 0) squares[i].style.backgroundColor = '#afa192'
+                else if (squares[i].innerHTML == 2) squares[i].style.backgroundColor = '#eee4da'
+                else if (squares[i].innerHTML == 4) squares[i].style.backgroundColor = '#ede0c8'
+                else if (squares[i].innerHTML == 8) squares[i].style.backgroundColor = '#f2b179'
+                else if (squares[i].innerHTML == 16) squares[i].style.backgroundColor = '#f59563'
+                else if (squares[i].innerHTML == 32) squares[i].style.backgroundColor = '#f67c5f'
+                else if (squares[i].innerHTML == 64) squares[i].style.backgroundColor = '#f65e3b'
+                else if (squares[i].innerHTML == 128) squares[i].style.backgroundColor = '#edcf72'
+                else if (squares[i].innerHTML == 256) squares[i].style.backgroundColor = '#edcc61'
+                else if (squares[i].innerHTML == 512) squares[i].style.backgroundColor = '#edc850'
+                else if (squares[i].innerHTML == 1024) squares[i].style.backgroundColor = '#edc53f'
+                else if (squares[i].innerHTML == 2048) squares[i].style.backgroundColor = '#edc22e'
+                    
+                }
+        } 
+        addColours()
+        
+        let myTimer = setInterval(addColours, 50)
 })
