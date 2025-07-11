@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gridDisplay = document.querySelector('.grid')
     const scoreDispaly = document.querySelector('#score')
     const width = 4
-    const resultDisplay = document.getElementById('#result')
+    const resultDisplay = document.getElementById('result')
     let squares = []
     let score = 0;
 
@@ -16,15 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         generate()
         generate()
+        
     }
     createBoard()
     function generate() {
         const randomNumber = Math.floor(Math.random() * squares.length)
         if (squares[randomNumber].innerHTML == 0) {
             squares[randomNumber].innerHTML = 2
-            //checkForGameOver()
+            checkForGameOver()
 
         }else generate()
+
     }
         function moveRight(){
             for (let i = 0; i < 16; i++) {
@@ -120,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             checkForWin()
+
         }
         function combineColumn() {
             for (let i = 0; i < 12; i++){
@@ -132,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             checkForWin()
+
         }
         function control (e) {
             if (e.key === 'ArrowLeft') {
@@ -176,12 +180,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (squares[i].innerHTML == 2048) {
                     resultDisplay.innerHTML = 'You WIN!'
                     document.removeEventListener('keydown', control)
+                    setTimeout(clear, 2000)
+
                 }
             }
         }
         function checkForGameOver() {
+            let zeros = 0
             for (let i = 0; i< squares.length; i++) {
-                let zeros = 0
                 if (squares[i].innerHTML == 0) {
                     zeros++;
                 } 
@@ -189,7 +195,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (zeros === 0) {
                 resultDisplay.innerHTML = 'You LOSE!'
                 document.removeEventListener('keydown', control)
+                setTimeout(clear, 2000)
             }
+        }
+        function clear() {
+            clearInterval(myTimer)
         }
         function addColours () {
             for (let i = 0; i < squares.length; i++){
